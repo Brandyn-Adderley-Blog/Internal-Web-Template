@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  db:
+    restart: always
+    image: postgres:10.0
+    container_name: postgresdb_01
+    volumes_from:
+      - db-data
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASS}"
+      POSTGREST_DB: "${DB_NAME}"
+    expose:
+      - "${DB_PORT}"
+
+
+  db-data:
+    restart: always
+    image: alpine
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    command: "true"
+
+
+  nginx:
+    restart: always
+    container_name: nginx_01
+    image: nginx:1.13.6
+    ports:
+      - "80:80"
+    volumes_from:
+        - web
+    volumes:
+      - ./config:/etc/nginx/conf.d
+    links:
+      - web
+
+  web:
+    restart: always
+    build: .
+    container_name: djangoweb_01
+    command: bash -c 'gunicorn djangoapp.wsgi:application -w 2 -b:8000 && python manage.py makemigrations && python manage.py migrate'
+    env_file: .env
+    volumes:
+      - ./src:/src
+    expose:
+      - "8000"
+    links:
+      - db
