@@ -1,4 +1,0 @@
-setup:
-	mkdir code
-  mkdir config
-  echo 'Hello, world.' >./config/requirements.txt
