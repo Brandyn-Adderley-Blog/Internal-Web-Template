@@ -19,7 +19,7 @@ services:
 
   db-data:
     restart: always
-    image: alpine
+    image: alpine:3.6
     volumes:
       - ./db:/var/lib/postgresql/data
     command: "true"
@@ -42,7 +42,7 @@ services:
     restart: always
     build: .
     container_name: djangoweb_01
-    command: gunicorn djangoapp.wsgi:application -w 2 -b:8000
+    command: gunicorn ${DJANGOAPP_NAME}.wsgi:application -w 2 -b:8000
     env_file: .env
     volumes:
       - ./src:/src

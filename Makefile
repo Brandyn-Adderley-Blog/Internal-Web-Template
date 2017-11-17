@@ -1,8 +1,16 @@
+include .env
+
 setup:
 	mkdir src src/static config db
 
 create_project:
-	docker-compose run web django-admin.py startproject <variable> .
+	docker-compose run web django-admin.py startproject $(DJANGOAPP_NAME) .
+
+build:
+	docker-compose build
+
+create_app:
+	docker-compose run web python manage.py startapp $(app)
 
 migrate_data:
 	docker exec -it djangoweb_01 python manage.py makemigrations
