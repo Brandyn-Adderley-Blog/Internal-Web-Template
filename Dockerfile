@@ -1,5 +1,5 @@
 
-FROM python:3.6.3-alpine
+FROM python:3.6.3-slim
 
 ENV PYTHONUNBUFFERED 1
 
